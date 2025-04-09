@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Shield, User, AlertCircle } from 'lucide-react';
+import { Shield, User, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import LoginAlertModal from '../components/LoginAlertModal';
 
 export default function Login() {
   const router = useRouter();
@@ -10,8 +11,12 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [currentRole, setCurrentRole] = useState('');
+  const [redirectPath, setRedirectPath] = useState('');
 
-  // Built-in accounts for demo purposes
+  // Built-in accounts for demo purposes - removed guest account
   const accounts = [
     { username: 'admin', password: 'admin123', role: 'admin' },
     { username: 'manager', password: 'manager123', role: 'manager' },
@@ -28,19 +33,51 @@ export default function Login() {
       const account = accounts.find(acc => acc.username === username && acc.password === password);
       
       if (account) {
-        // Redirect based on role
+        // Set role and redirect path
+        setCurrentRole(account.role);
+        
+        // Set redirect path based on role
         if (account.role === 'admin') {
-          router.push('/admin-dashboard');
+          setRedirectPath('/admin-dashboard');
         } else if (account.role === 'manager') {
-          router.push('/manager-dashboard');
+          setRedirectPath('/manager-dashboard');
         } else {
-          router.push('/employee-dashboard');
+          setRedirectPath('/employee-dashboard');
         }
+        
+        // Show the success alert modal
+        setShowAlert(true);
       } else {
         setError('Invalid username or password');
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }, 800);
+  };
+
+  const continueAsGuest = () => {
+    // Set role to guest and redirect path
+    setCurrentRole('guest');
+    setRedirectPath('/guest-dashboard');
+    
+    // Show the guest alert modal
+    setShowAlert(true);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  // Handle modal close and navigation
+  const handleModalClose = () => {
+    setShowAlert(false);
+    setIsLoading(false);
+    
+    // Only navigate if we have a redirect path
+    if (redirectPath) {
+      router.push(redirectPath);
+      // Reset the redirect path
+      setRedirectPath('');
+    }
   };
 
   return (
@@ -70,7 +107,7 @@ export default function Login() {
               </div>
             )}
             
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form id="login-form" className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="username" className="block text-sm font-medium text-gray-300">
                   Username
@@ -104,14 +141,28 @@ export default function Login() {
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-gray-700 block w-full pl-10 pr-3 py-2 border border-gray-600 rounded-md leading-5 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                    className="bg-gray-700 block w-full pl-10 pr-10 py-2 border border-gray-600 rounded-md leading-5 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                     placeholder="Password"
                   />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      className="text-gray-400 hover:text-gray-300 focus:outline-none"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -144,13 +195,37 @@ export default function Login() {
                   {isLoading ? 'Signing in...' : 'Sign in'}
                 </button>
               </div>
+              
+              <div className="relative flex items-center justify-center mt-4">
+                <div className="border-t border-gray-600 w-full"></div>
+                <div className="bg-gray-800 px-2 text-sm text-gray-400">or</div>
+                <div className="border-t border-gray-600 w-full"></div>
+              </div>
+              
+              <div>
+                <button
+                  type="button"
+                  onClick={continueAsGuest}
+                  disabled={isLoading}
+                  className="w-full flex justify-center py-2 px-4 border border-gray-600
+                  rounded-md shadow-sm text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600
+                  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors
+                  disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  Continue as Guest
+                </button>
+              </div>
             </form>
-          </div>
-          
-          <div className="text-center mt-4">
           </div>
         </div>
       </div>
+
+      {/* Success Alert Modal */}
+      <LoginAlertModal 
+        isOpen={showAlert} 
+        onClose={handleModalClose} 
+        userRole={currentRole} 
+      />
     </div>
   );
 }

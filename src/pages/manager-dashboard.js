@@ -25,9 +25,9 @@ export default function ManagerDashboard() {
     { id: 3, user: 'Mike Johnson', requestType: 'Leave Request', requestedOn: '2025-04-06', status: 'Pending' },
   ]);
 
-  // Mock data for team stats
+  // Mock data for team stats - Updated the first stat color to teal
   const teamStats = [
-    { title: 'Team Members', value: 5, icon: <Users className="h-8 w-8 text-blue-400" />, change: '+1', color: 'bg-blue-500/10' },
+    { title: 'Team Members', value: 5, icon: <Users className="h-8 w-8 text-teal-400" />, change: '+1', color: 'bg-teal-500/10' },
     { title: 'Active Projects', value: 3, icon: <FileText className="h-8 w-8 text-green-400" />, change: 'No change', color: 'bg-green-500/10' },
     { title: 'Pending Requests', value: pendingRequests.length, icon: <Clock className="h-8 w-8 text-yellow-400" />, change: '+2', color: 'bg-yellow-500/10' },
     { title: 'Dept Resources', value: 8, icon: <Clipboard className="h-8 w-8 text-purple-400" />, change: '+1', color: 'bg-purple-500/10' },
@@ -70,7 +70,7 @@ export default function ManagerDashboard() {
         {/* Sidebar */}
         <div className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col">
           <div className="h-16 flex items-center px-4 border-b border-gray-700">
-            <svg className="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg className="h-8 w-8 text-teal-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2L4 6V12C4 16.42 7.36 20.44 12 22C16.64 20.44 20 16.42 20 12V6L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               <path d="M12 11C13.1046 11 14 10.1046 14 9C14 7.89543 13.1046 7 12 7C10.8954 7 10 7.89543 10 9C10 10.1046 10.8954 11 12 11Z" fill="currentColor" />
               <path d="M12 11V14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -81,25 +81,25 @@ export default function ManagerDashboard() {
           
           <nav className="flex-grow py-4">
             <div className="px-4 py-2 text-xs text-gray-400">MANAGEMENT</div>
-            <a onClick={() => setSelectedTab('overview')} className={`px-4 py-2 flex items-center text-sm font-medium transition-colors cursor-pointer ${selectedTab === 'overview' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
+            <a onClick={() => setSelectedTab('overview')} className={`px-4 py-2 flex items-center text-sm font-medium transition-colors cursor-pointer ${selectedTab === 'overview' ? 'bg-teal-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
               <Shield className="mr-3 h-5 w-5" />
               Department Overview
             </a>
-            <a onClick={() => setSelectedTab('team')} className={`px-4 py-2 flex items-center text-sm font-medium transition-colors cursor-pointer ${selectedTab === 'team' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
+            <a onClick={() => setSelectedTab('team')} className={`px-4 py-2 flex items-center text-sm font-medium transition-colors cursor-pointer ${selectedTab === 'team' ? 'bg-teal-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
               <Users className="mr-3 h-5 w-5" />
               Team Management
             </a>
-            <a onClick={() => setSelectedTab('requests')} className={`px-4 py-2 flex items-center text-sm font-medium transition-colors cursor-pointer ${selectedTab === 'requests' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
+            <a onClick={() => setSelectedTab('requests')} className={`px-4 py-2 flex items-center text-sm font-medium transition-colors cursor-pointer ${selectedTab === 'requests' ? 'bg-teal-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
               <Clock className="mr-3 h-5 w-5" />
               Pending Requests
             </a>
-            <a onClick={() => setSelectedTab('resources')} className={`px-4 py-2 flex items-center text-sm font-medium transition-colors cursor-pointer ${selectedTab === 'resources' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
+            <a onClick={() => setSelectedTab('resources')} className={`px-4 py-2 flex items-center text-sm font-medium transition-colors cursor-pointer ${selectedTab === 'resources' ? 'bg-teal-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
               <Clipboard className="mr-3 h-5 w-5" />
               Department Resources
             </a>
             
             <div className="px-4 pt-6 pb-2 text-xs text-gray-400">ACCOUNT</div>
-            <a onClick={() => setSelectedTab('profile')} className={`px-4 py-2 flex items-center text-sm font-medium transition-colors cursor-pointer ${selectedTab === 'profile' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
+            <a onClick={() => setSelectedTab('profile')} className={`px-4 py-2 flex items-center text-sm font-medium transition-colors cursor-pointer ${selectedTab === 'profile' ? 'bg-teal-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>
               <User className="mr-3 h-5 w-5" />
               My Profile
             </a>
@@ -112,7 +112,7 @@ export default function ManagerDashboard() {
           <div className="p-4 border-t border-gray-700">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                <div className="h-8 w-8 rounded-full bg-teal-600 flex items-center justify-center">
                   <span className="font-bold text-sm">M</span>
                 </div>
               </div>
@@ -136,7 +136,7 @@ export default function ManagerDashboard() {
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="bg-gray-700 text-gray-300 rounded-md pl-8 pr-4 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="bg-gray-700 text-gray-300 rounded-md pl-8 pr-4 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500"
                 />
                 <Search className="absolute left-2 top-1.5 h-4 w-4 text-gray-500" />
               </div>
@@ -173,7 +173,7 @@ export default function ManagerDashboard() {
                 <div className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-6">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-semibold">Recent Department Activities</h3>
-                    <button className="text-sm text-blue-400 hover:text-blue-300">View All</button>
+                    <button className="text-sm text-teal-400 hover:text-teal-300">View All</button>
                   </div>
                   <div className="space-y-4">
                     {recentActivities.map((activity) => (
@@ -260,7 +260,7 @@ export default function ManagerDashboard() {
                           <td className="px-4 py-3 whitespace-nowrap">
                             <span className={`px-2 py-1 text-xs rounded-full ${
                               member.position === 'Tech Lead' ? 'bg-purple-500/20 text-purple-400' :
-                              member.position === 'Developer' ? 'bg-blue-500/20 text-blue-400' :
+                              member.position === 'Developer' ? 'bg-teal-500/20 text-teal-400' :
                               'bg-green-500/20 text-green-400'
                             }`}>
                               {member.position}
@@ -275,7 +275,7 @@ export default function ManagerDashboard() {
                             </span>
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                            <button className="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                            <button className="px-3 py-1 text-xs bg-teal-600 text-white rounded-md hover:bg-teal-700">
                               View Details
                             </button>
                           </td>
@@ -370,7 +370,7 @@ export default function ManagerDashboard() {
                       <p className="text-sm text-gray-400 mb-3">Brand guidelines, templates, and assets</p>
                       <div className="flex justify-between items-center">
                         <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">5 Team Members</span>
-                        <button className="text-xs text-blue-400 hover:text-blue-300">Manage Access</button>
+                        <button className="text-xs text-teal-400 hover:text-teal-300">Manage Access</button>
                       </div>
                     </div>
                     
@@ -379,7 +379,7 @@ export default function ManagerDashboard() {
                       <p className="text-sm text-gray-400 mb-3">Financial tracking and expense management</p>
                       <div className="flex justify-between items-center">
                         <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">3 Team Members</span>
-                        <button className="text-xs text-blue-400 hover:text-blue-300">Manage Access</button>
+                        <button className="text-xs text-teal-400 hover:text-teal-300">Manage Access</button>
                       </div>
                     </div>
                     
@@ -388,7 +388,7 @@ export default function ManagerDashboard() {
                       <p className="text-sm text-gray-400 mb-3">Contact information and account history</p>
                       <div className="flex justify-between items-center">
                         <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">4 Team Members</span>
-                        <button className="text-xs text-blue-400 hover:text-blue-300">Manage Access</button>
+                        <button className="text-xs text-teal-400 hover:text-teal-300">Manage Access</button>
                       </div>
                     </div>
                   </div>
@@ -401,7 +401,7 @@ export default function ManagerDashboard() {
                 <h2 className="text-2xl font-bold mb-6">My Profile</h2>
                 <div className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-6">
                   <div className="flex items-center mb-6">
-                    <div className="h-16 w-16 rounded-full bg-blue-600 flex items-center justify-center text-xl font-bold mr-4">
+                    <div className="h-16 w-16 rounded-full bg-teal-600 flex items-center justify-center text-xl font-bold mr-4">
                       J
                     </div>
                     <div>
@@ -433,7 +433,7 @@ export default function ManagerDashboard() {
                     </div>
                     
                     <div>
-                      <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm">
+                      <button className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors text-sm">
                         Update Profile
                       </button>
                       <button className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors text-sm ml-2">
