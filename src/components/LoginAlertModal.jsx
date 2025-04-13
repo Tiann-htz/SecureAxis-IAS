@@ -4,31 +4,31 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
   const [isAnimating, setIsAnimating] = useState(false);
-  const [guestScanComplete, setGuestScanComplete] = useState(false);
+  const [scanComplete, setScanComplete] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setIsAnimating(true);
-      setGuestScanComplete(false);
+      setScanComplete(false);
       
-      // For guest role, show scanning animation before welcome
-      if (userRole === 'guest') {
-        // After 3 seconds, show welcome message
+      // Manager and employee roles need scanning
+      if (userRole === 'manager' || userRole === 'employee') {
+        // After scanning animation, show welcome message
         const scanTimer = setTimeout(() => {
-          setGuestScanComplete(true);
-        }, 3000);
+          setScanComplete(true);
+        }, 2500);
         
         // Auto close after scanning and showing welcome message
         const closeTimer = setTimeout(() => {
           handleClose();
-        }, 6000);
+        }, 5000);
         
         return () => {
           clearTimeout(scanTimer);
           clearTimeout(closeTimer);
         };
       } else {
-        // For normal login, show message then navigate
+        // For admin (after pin) and guest, just show welcome message
         const timer = setTimeout(() => {
           handleClose();
         }, 3000);
@@ -59,6 +59,8 @@ const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
     },
     manager: {
       icon: <Users className="h-12 w-12 text-teal-400" />,
+      scanningTitle: "Verifying Manager Credentials",
+      scanningMessage: "Validating team management permissions...",
       title: "Manager Login Successful",
       message: "Welcome back, Manager. Your team dashboard is ready.",
       color: "teal",
@@ -67,6 +69,8 @@ const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
     },
     employee: {
       icon: <User className="h-12 w-12 text-green-400" />,
+      scanningTitle: "Verifying Employee Access",
+      scanningMessage: "Validating workspace permissions...",
       title: "Employee Login Successful",
       message: "Welcome back. Your workspace is ready.",
       color: "green",
@@ -75,8 +79,6 @@ const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
     },
     guest: {
       icon: <Coffee className="h-12 w-12 text-stone-600" />,
-      scanningTitle: "Scanning Guest Access",
-      scanningMessage: "Verifying guest privileges...",
       title: "Guest Access Granted",
       message: "Welcome to the guest view. Limited access provided.",
       color: "gray",
@@ -86,6 +88,7 @@ const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
   };
 
   const config = roleConfig[userRole] || roleConfig.guest;
+  const needsScanning = (userRole === 'manager' || userRole === 'employee') && !scanComplete;
   
   return (
     <AnimatePresence>
@@ -122,12 +125,12 @@ const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
                   transition={{ delay: 0.1, type: "spring", stiffness: 400 }}
                   className="flex-shrink-0"
                 >
-                  {userRole === 'guest' && !guestScanComplete ? (
+                  {needsScanning ? (
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
                     >
-                      <Scan className="h-12 w-12 text-stone-600" />
+                      <Scan className={`h-12 w-12 text-${config.color}-400`} />
                     </motion.div>
                   ) : (
                     config.icon
@@ -140,19 +143,19 @@ const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
                     transition={{ delay: 0.2 }}
                     className="flex items-center mb-2"
                   >
-                    {userRole === 'guest' && !guestScanComplete ? (
+                    {needsScanning ? (
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
                         className="mr-2"
                       >
-                        <Loader className={`h-5 w-5 text-${config.color}-600`} />
+                        <Loader className={`h-5 w-5 text-${config.color}-400`} />
                       </motion.div>
                     ) : (
                       <CheckCircle className={`h-5 w-5 text-${config.color}-400 mr-2`} />
                     )}
                     <h3 className={`text-lg font-medium ${userRole === 'guest' ? 'text-gray-700' : `text-${config.color}-300`}`}>
-                      {userRole === 'guest' && !guestScanComplete ? config.scanningTitle : config.title}
+                      {needsScanning ? config.scanningTitle : config.title}
                     </h3>
                   </motion.div>
                   <motion.p 
@@ -161,12 +164,12 @@ const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
                     transition={{ delay: 0.3 }}
                     className={`${userRole === 'guest' ? 'text-gray-600' : 'text-gray-300'}`}
                   >
-                    {userRole === 'guest' && !guestScanComplete ? config.scanningMessage : config.message}
+                    {needsScanning ? config.scanningMessage : config.message}
                   </motion.p>
                   
                   {/* Loading Progress Bar */}
                   <motion.div 
-                    key={`progress-${userRole}-${guestScanComplete}`}
+                    key={`progress-${userRole}-${scanComplete}`}
                     initial={{ width: 0, opacity: 0 }}
                     animate={{ width: "100%", opacity: 1 }}
                     transition={{ delay: 0.4 }}
@@ -176,7 +179,7 @@ const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
                       initial={{ width: "100%" }}
                       animate={{ width: "0%" }}
                       transition={{ 
-                        duration: userRole === 'guest' ? (guestScanComplete ? 3 : 2.8) : 3, 
+                        duration: needsScanning ? 2.3 : 3, 
                         ease: "linear" 
                       }}
                       className={`bg-${config.color}-500 h-1.5 rounded-full`}

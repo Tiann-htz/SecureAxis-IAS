@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Shield, User, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import LoginAlertModal from '../components/LoginAlertModal';
+import PinModal from '../components/PinModal';
 
 export default function Login() {
   const router = useRouter();
@@ -13,10 +14,11 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [showPinModal, setShowPinModal] = useState(false);
   const [currentRole, setCurrentRole] = useState('');
   const [redirectPath, setRedirectPath] = useState('');
 
-  // Built-in accounts for demo purposes - removed guest account
+  // Built-in accounts for demo purposes
   const accounts = [
     { username: 'admin', password: 'admin123', role: 'admin' },
     { username: 'manager', password: 'manager123', role: 'manager' },
@@ -33,20 +35,24 @@ export default function Login() {
       const account = accounts.find(acc => acc.username === username && acc.password === password);
       
       if (account) {
-        // Set role and redirect path
+        // Set role 
         setCurrentRole(account.role);
         
         // Set redirect path based on role
         if (account.role === 'admin') {
           setRedirectPath('/admin-dashboard');
+          // For admin role, show PIN verification first
+          setShowPinModal(true);
+          setIsLoading(false);
         } else if (account.role === 'manager') {
           setRedirectPath('/manager-dashboard');
+          // Show the success alert modal with scanning for manager
+          setShowAlert(true);
         } else {
           setRedirectPath('/employee-dashboard');
+          // Show the success alert modal with scanning for employee
+          setShowAlert(true);
         }
-        
-        // Show the success alert modal
-        setShowAlert(true);
       } else {
         setError('Invalid username or password');
         setIsLoading(false);
@@ -59,12 +65,25 @@ export default function Login() {
     setCurrentRole('guest');
     setRedirectPath('/guest-dashboard');
     
-    // Show the guest alert modal
+    // Show the guest alert modal (without scanning)
     setShowAlert(true);
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  // Handle PIN verification success
+  const handlePinSuccess = () => {
+    setShowPinModal(false);
+    // Show login success alert after PIN verification
+    setShowAlert(true);
+  };
+
+  // Handle pin modal close (on cancel)
+  const handlePinModalClose = () => {
+    setShowPinModal(false);
+    setIsLoading(false);
   };
 
   // Handle modal close and navigation
@@ -219,6 +238,13 @@ export default function Login() {
           </div>
         </div>
       </div>
+
+      {/* PIN Verification Modal for Admin */}
+      <PinModal 
+        isOpen={showPinModal} 
+        onClose={handlePinModalClose} 
+        onSuccess={handlePinSuccess} 
+      />
 
       {/* Success Alert Modal */}
       <LoginAlertModal 
