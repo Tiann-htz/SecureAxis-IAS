@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CheckCircle, User, Shield, Users, Coffee, Scan, Loader } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
+const LoginAlertModal = ({ isOpen, onClose, userRole, isWelcomeBack = false }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [scanComplete, setScanComplete] = useState(false);
 
@@ -11,31 +11,32 @@ const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
       setIsAnimating(true);
       setScanComplete(false);
       
-      // Manager and employee roles need scanning
-      if (userRole === 'manager' || userRole === 'employee') {
+      // Only perform scanning animation if this is NOT the welcome back alert
+      // and if the role is manager or employee
+      if (!isWelcomeBack && (userRole === 'manager' || userRole === 'employee')) {
         // After scanning animation, show welcome message
         const scanTimer = setTimeout(() => {
           setScanComplete(true);
         }, 2500);
         
-        // Auto close after scanning and showing welcome message
+        // Auto close after scanning animation completes
         const closeTimer = setTimeout(() => {
           handleClose();
-        }, 5000);
+        }, 4000); // Give enough time to see completion
         
         return () => {
           clearTimeout(scanTimer);
           clearTimeout(closeTimer);
         };
       } else {
-        // For admin (after pin) and guest, just show welcome message
+        // For admin, guest, or welcome back alerts, just show message
         const timer = setTimeout(() => {
           handleClose();
         }, 3000);
         return () => clearTimeout(timer);
       }
     }
-  }, [isOpen, userRole]);
+  }, [isOpen, userRole, isWelcomeBack]);
 
   const handleClose = () => {
     setIsAnimating(false);
@@ -88,7 +89,10 @@ const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
   };
 
   const config = roleConfig[userRole] || roleConfig.guest;
-  const needsScanning = (userRole === 'manager' || userRole === 'employee') && !scanComplete;
+  
+  // Handle welcome back or initial scanning based on props
+  // If isWelcomeBack is true, skip scanning animation regardless of role
+  const needsScanning = !isWelcomeBack && (userRole === 'manager' || userRole === 'employee') && !scanComplete;
   
   return (
     <AnimatePresence>
@@ -169,7 +173,7 @@ const LoginAlertModal = ({ isOpen, onClose, userRole }) => {
                   
                   {/* Loading Progress Bar */}
                   <motion.div 
-                    key={`progress-${userRole}-${scanComplete}`}
+                    key={`progress-${userRole}-${scanComplete}-${isWelcomeBack}`}
                     initial={{ width: 0, opacity: 0 }}
                     animate={{ width: "100%", opacity: 1 }}
                     transition={{ delay: 0.4 }}

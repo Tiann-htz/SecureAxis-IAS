@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Shield, User, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import LoginAlertModal from '../components/LoginAlertModal';
 import PinModal from '../components/PinModal';
+import AuthenticatorModal from '../components/AuthenticatorModal';
+import OtpModal from '../components/OtpModal';
 
 export default function Login() {
   const router = useRouter();
@@ -15,12 +17,14 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
+  const [showAuthenticatorModal, setShowAuthenticatorModal] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
   const [currentRole, setCurrentRole] = useState('');
   const [redirectPath, setRedirectPath] = useState('');
 
   // Built-in accounts for demo purposes
   const accounts = [
-    { username: 'admin', password: 'admin123', role: 'admin' },
+    { username: 'admin', password: '@secured_admin123', role: 'admin' },
     { username: 'manager', password: 'manager123', role: 'manager' },
     { username: 'employee', password: 'employee123', role: 'employee' }
   ];
@@ -46,12 +50,14 @@ export default function Login() {
           setIsLoading(false);
         } else if (account.role === 'manager') {
           setRedirectPath('/manager-dashboard');
-          // Show the success alert modal with scanning for manager
-          setShowAlert(true);
-        } else {
+          // Show Authenticator modal for manager
+          setShowAuthenticatorModal(true);
+          setIsLoading(false);
+        } else if (account.role === 'employee') {
           setRedirectPath('/employee-dashboard');
-          // Show the success alert modal with scanning for employee
-          setShowAlert(true);
+          // Show OTP modal for employee
+          setShowOtpModal(true);
+          setIsLoading(false);
         }
       } else {
         setError('Invalid username or password');
@@ -83,6 +89,32 @@ export default function Login() {
   // Handle pin modal close (on cancel)
   const handlePinModalClose = () => {
     setShowPinModal(false);
+    setIsLoading(false);
+  };
+
+  // Handle Authenticator verification success
+  const handleAuthenticatorSuccess = () => {
+    setShowAuthenticatorModal(false);
+    // Show login success alert after authenticator verification
+    setShowAlert(true);
+  };
+
+  // Handle Authenticator modal close (on cancel)
+  const handleAuthenticatorModalClose = () => {
+    setShowAuthenticatorModal(false);
+    setIsLoading(false);
+  };
+
+  // Handle OTP verification success
+  const handleOtpSuccess = () => {
+    setShowOtpModal(false);
+    // Show login success alert after OTP verification
+    setShowAlert(true);
+  };
+
+  // Handle OTP modal close (on cancel)
+  const handleOtpModalClose = () => {
+    setShowOtpModal(false);
     setIsLoading(false);
   };
 
@@ -244,6 +276,21 @@ export default function Login() {
         isOpen={showPinModal} 
         onClose={handlePinModalClose} 
         onSuccess={handlePinSuccess} 
+      />
+
+      {/* Authenticator Modal for Manager */}
+      <AuthenticatorModal
+        isOpen={showAuthenticatorModal}
+        onClose={handleAuthenticatorModalClose}
+        onSuccess={handleAuthenticatorSuccess}
+      />
+
+      {/* OTP Modal for Employee */}
+      <OtpModal
+        isOpen={showOtpModal}
+        onClose={handleOtpModalClose}
+        onSuccess={handleOtpSuccess}
+        userRole={currentRole}
       />
 
       {/* Success Alert Modal */}

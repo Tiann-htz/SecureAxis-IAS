@@ -10,7 +10,6 @@ const PinModal = ({ isOpen, onClose, onSuccess }) => {
   const [isVerified, setIsVerified] = useState(false);
   const inputRefs = useRef([]);
 
-  // For demo purposes, the correct PIN is "123456"
   const correctPin = "123456";
 
   useEffect(() => {
@@ -20,9 +19,7 @@ const PinModal = ({ isOpen, onClose, onSuccess }) => {
   }, [isOpen]);
 
   useEffect(() => {
-    // Check if all PIN digits are filled
     if (pin.every(digit => digit !== '')) {
-      // Verify PIN after all digits are entered
       verifyPin();
     }
   }, [pin]);
@@ -32,11 +29,10 @@ const PinModal = ({ isOpen, onClose, onSuccess }) => {
     if (!/^\d*$/.test(value)) return;
 
     const newPin = [...pin];
-    newPin[index] = value.slice(-1); // Take only the last character if multiple are pasted
+    newPin[index] = value.slice(-1); 
     setPin(newPin);
     setError('');
 
-    // Move to next input if current input is filled
     if (value && index < 5) {
       setActiveInput(index + 1);
       inputRefs.current[index + 1].focus();
@@ -44,7 +40,6 @@ const PinModal = ({ isOpen, onClose, onSuccess }) => {
   };
 
   const handleKeyDown = (index, e) => {
-    // Handle backspace
     if (e.key === 'Backspace') {
       if (pin[index] === '' && index > 0) {
         setActiveInput(index - 1);
@@ -52,7 +47,6 @@ const PinModal = ({ isOpen, onClose, onSuccess }) => {
       }
     }
     
-    // Handle arrow keys
     if (e.key === 'ArrowLeft' && index > 0) {
       setActiveInput(index - 1);
       inputRefs.current[index - 1].focus();
@@ -68,14 +62,12 @@ const PinModal = ({ isOpen, onClose, onSuccess }) => {
     setIsScanning(true);
     setError('');
     
-    // Simulate verification process
     setTimeout(() => {
       setIsScanning(false);
       
       if (enteredPin === correctPin) {
         setIsVerified(true);
         
-        // After showing success message, proceed
         setTimeout(() => {
           onSuccess();
         }, 1500);
@@ -91,7 +83,6 @@ const PinModal = ({ isOpen, onClose, onSuccess }) => {
   };
 
   const handleClose = () => {
-    // Reset the state
     setPin(['', '', '', '', '', '']);
     setActiveInput(0);
     setError('');
